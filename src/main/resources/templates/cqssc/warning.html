@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>重庆时时彩辅助工具</title>
+    <head>
+        <link rel="stylesheet" th:href="@{/static/bootstrap/css/bootstrap.css}"/>
+        <link rel="stylesheet" th:href="@{/static/bootstrap-table/bootstrap-table.css}"/>
+    </head>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="text-center">
+            <h2>重庆时时彩预警结果</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-2 pull-right">
+            <a th:href="@{/cqssc/index}" class="btn btn-sm btn-default">回到首页</a>
+        </div>
+    </div>
+
+    <hr/>
+
+    <div class="row">
+        <div class="col-sm-8">
+            <h3>预警结果</h3>
+        </div>
+        <div class="col-sm-2 pull-right">
+            <button class="btn btn-sm btn-success col-sm-offset-1" id="refreshBtn">刷新</button>
+        </div>
+    </div>
+
+    <table id="gambleTable" class="table">
+    </table>
+    <div class="row" style="margin-top: 35px;"></div>
+</div>
+
+</div>
+
+</body>
+
+<script th:src="@{/static/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/static/bootstrap/js/bootstrap.js}"></script>
+<script th:src="@{/static/bootstrap-table/bootstrap-table.js}"></script>
+<script th:src="@{/static/layer/layer.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var context = /*[[@{/}]]*/;
+    /*]]>*/
+</script>
+
+<script type="text/javascript">
+
+    $(function () {
+        generate();
+        $("#refreshBtn").click(function () {
+            generate();
+        });
+    });
+
+    $('#gambleTable').bootstrapTable({
+        striped: true,                      //是否显示行间隔色
+        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        //pagination: true,                   //是否显示分页（*）
+        sortable: false,                     //是否启用排序
+        search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端
+        showColumns: true,                  //是否显示所有的列
+        showToggle: true,                    //是否显示详细视图和列表视图的切换按钮
+        cardView: false,                    //是否显示详细视图
+        //detailView: false,                   //是否显示父子表
+        pageList: [100],
+        onLoadSuccess: function () {
+            return false;
+        },
+        columns: [{
+            field: 'location',
+            title: '位置',
+            width: '10%'
+        },{
+            field: 'location',
+            title: '位置2',
+            width: '10%'
+        }, {
+            field: 'paramName',
+            title: '号码名称',
+            width: '15%'
+        }, {
+            field: 'amount',
+            title: '注数',
+            width: '8%'
+        }, {
+            field: 'maxNeglect',
+            title: '历史最大遗漏',
+            width: '8%'
+        }, {
+            field: 'period',
+            title: '当前遗漏',
+            width: '8%',
+            formatter: function (period, row) {
+                if (row.waringFlag === 1) {
+                    return '<p style="color: red">' + period + '</p>';
+                }
+                return period;
+            }
+        }, {
+            field: 'numbers',
+            title: '参数详情',
+            width: ' 15%',
+            formatter: function (value) {
+                if (value.length > 50) {
+                    return '<a href="#" title="' + value + '">' + value.substr(0, 30) + '...</a> ';
+                }
+                return value;
+            }
+        }, {
+            field: 'numbers',
+            title: '操作',
+            width: '20%',
+            align:'center',
+            formatter: function (value,row) {
+                var result =  '<button class="btn btn-sm btn-info clip_button" data-val="'+value+'" onclick=copyNumbers(this)>复制</button>';
+                result += '<button class="btn btn-sm btn-success col-sm-offset-1" onclick="analyze(' + row.id + ')">分析</button>';
+                return result;
+            }
+        }]
+    });
+
+    function generate() {
+        var index = layer.load(1);
+        $.ajax({
+            url: context + 'cqssc/warning/data',
+            type: 'post',
+            dataType: "json",
+            success: function (generateRows) {
+                $("#gambleTable").bootstrapTable('load', generateRows);
+                // mergeColspan(generateRows,['location']);
+                mergeCells(generateRows, "location", 1);//行合并
+
+            },
+            fail: function () {
+                layer.alert('加载失败');
+            },
+            complete: function () {
+                layer.close(index);
+            }
+        })
+    }
+
+    function mergeCells(data, fieldName, colspan) {
+        if (data.length === 0) {
+            return;
+        }
+        var numArr = [];
+        var value = data[0][fieldName];
+        var num = 1;
+        for (var i = 1; i < data.length; i++) {
+            if (value === data[i][fieldName]) {
+                num++;
+            }else{
+                numArr.push(num);
+                value = data[i][fieldName];
+                num = 1;
+            }
+        }
+        numArr.push(num);
+        /*if(data.length===2 && data[0][fieldName] === data[1][fieldName]){
+            numArr = [];
+            numArr.push(num);
+        }*/
+        var merIndex = 0;
+        for (var i = 0; i < numArr.length; i++) {
+            $('#gambleTable').bootstrapTable('mergeCells', {
+                index: merIndex,
+                field: fieldName,
+                colspan: colspan,
+                rowspan: numArr[i]
+            })
+            merIndex += numArr[i];
+        }
+    }
+
+    function copyNumbers(_this) {
+        var $this = $(_this);
+        var aux = document.createElement("input");
+        aux.setAttribute("value",$this.data("val"));
+        document.body.appendChild(aux);
+        aux.select();
+        document.execCommand("copy");
+        document.body.removeChild(aux);
+        layer.msg('复制成功');
+    }
+
+    function analyze(id) {
+        layer.open({
+            type: 2,
+            area: ['90%', '90%'],
+            fixed: false, //不固定
+            maxmin: true,
+            title: '分析结果',
+            content: context + 'cqssc/param/' + id + '/param_analyze'
+        });
+    }
+
+</script>
+
+</html>

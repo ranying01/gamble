@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>十一选五</title>
+    <head>
+        <link rel="stylesheet" th:href="@{/static/bootstrap/css/bootstrap.css}"/>
+        <link rel="stylesheet" th:href="@{/static/bootstrap-table/bootstrap-table.css}"/>
+    </head>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="row" style="margin-bottom: 20px;">
+        <div class="text-center">
+            <h2>十一选五参数</h2>
+        </div>
+    </div>
+
+    <div>
+        <form id="queryForm" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">彩票类型</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="type" name="type" onchange="listData()">
+                        <option value="gd11x5">广东11选5</option>
+                        <option value="js11x5">江苏11选5</option>
+                        <option value="sh11x5">上海11选5</option>
+                        <option value="sd11x5">山东11选5</option>
+                        <option value="jx11x5">江西11选5</option>
+                    </select>
+                </div>
+
+                <div class="col-sm-2">
+                    <button class="btn btn-sm btn-success col-sm-offset-1" type="button" id="queryBtn">查询</button>
+                </div>
+
+                <div class="col-sm-2 pull-right">
+                    <a th:href="@{/syxw/index}" class="btn btn-sm btn-default">回到首页</a>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <div class="row">
+        <table id="paramTable" class="table">
+        </table>
+    </div>
+</div>
+
+</body>
+
+<script th:src="@{/static/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/static/bootstrap/js/bootstrap.js}"></script>
+<script th:src="@{/static/bootstrap-table/bootstrap-table.js}"></script>
+<script th:src="@{/static/layer/layer.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var context = /*[[@{/}]]*/;
+    /*]]>*/
+</script>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $("#queryBtn").click(function () {
+            listData();
+        });
+
+        $('#paramTable').bootstrapTable({
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: false,                    //是否启用排序
+            pageSize: 10,                       //每页的记录行数（*）
+            search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+            showColumns: true,                  //是否显示所有的列
+            showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                  //是否显示父子表
+            columns: [{
+                field: 'name',
+                title: '名称',
+                width: '10%'
+            }, {
+                field: 'type',
+                title: '类型',
+                width: '10%',
+                formatter: function (value) {
+                    if (value === 'gd11x5') {
+                        return '广东11选5 ';
+                    } else if (value === 'js11x5') {
+                        return '江苏11选5 ';
+                    } else if (value === 'sh11x5') {
+                        return '上海11选5 ';
+                    } else if (value === 'jx11x5') {
+                        return '江西11选5 ';
+                    } else if (value === 'sd11x5') {
+                        return '山东11选5 ';
+                    }
+                    return value;
+                }
+            }, {
+                field: 'numbers',
+                title: '参数详情',
+                width: '40%',
+                formatter: function (value) {
+                    if (value.length > 100) {
+                        return '<a href="#" title="' + value + '">' + value.substr(0, 100) + '...</a> ';
+                    }
+                    return value;
+                }
+            }, {
+                field: 'amount',
+                title: '注数',
+                width: '5%',
+            }, {
+                field: 'maxNeglect',
+                title: '历史最大遗漏',
+                width: '10%',
+                align: 'center'
+            }, {
+                field: 'id',
+                title: '操作',
+                width: '20%',
+                align: 'center',
+                formatter: function (id, row) {
+                    return '<button class="btn btn-ms btn-success" onclick="analyze(' + id + ')">分析</button>' +
+                        '<button class="btn btn-ms btn-info col-sm-offset-1" onclick="edit(' + id + ')">修改</button>' +
+                        '<button class="btn btn-ms btn-danger col-sm-offset-1" data-id="' + row.id + '" data-name="' + row.name + '" onclick="deleteParam(this)">删除</button>';
+                }
+            }]
+        });
+        listData();
+    });
+
+    function deleteParam(_this) {
+        var $this = $(_this);
+        var name = $this.data("name");
+        var id = $this.data("id");
+        layer.confirm('您确定删除 “' + name + '” 吗？', {
+            btn: ['确定', '取消'], //按钮
+            offset: "[20%]",
+            title: '删除参数',
+        }, function () {
+            $.ajax({
+                url: context + '/syxw/param/delete/' + id,
+                type: 'post',
+                dataType: "json",
+                success: function (result) {
+                    //$("#paramTable").bootstrapTable('refresh');
+                    layer.msg('删除成功', {icon: 1});
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 1000);
+                },
+                fail: function () {
+                    layer.alert('删除失败');
+                }
+            });
+        }, function () {
+
+        });
+    }
+
+    function listData() {
+        var index = layer.load(1);
+        $.ajax({
+            url: context + '/syxw/param/data',
+            data: $("#queryForm").serialize(),
+            type: 'post',
+            dataType: "json",
+            success: function (result) {
+                $("#paramTable").bootstrapTable('load', result);
+                layer.close(index);
+            }
+        });
+    }
+
+    function analyze(id) {
+        layer.open({
+            type: 2,
+            area: ['90%', '90%'],
+            fixed: false, //不固定
+            maxmin: true,
+            title: '分析结果',
+            content: context + '/syxw/param/' + id + '/param_analyze'
+        });
+    }
+    
+    function edit(id) {
+        layer.open({
+            type: 2,
+            area: ['90%', '90%'],
+            fixed: false,
+            maxmin: true,
+            title: '编辑',
+            content: context + '/syxw/param/' + id + '/edit'
+        });
+    }
+
+</script>
+
+</html>

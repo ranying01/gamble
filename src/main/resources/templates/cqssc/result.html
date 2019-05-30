@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>重庆时时彩辅助工具</title>
+    <head>
+        <link rel="stylesheet" th:href="@{/static/bootstrap/css/bootstrap.css}"/>
+        <link rel="stylesheet" th:href="@{/static/bootstrap-table/bootstrap-table.css}"/>
+    </head>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="text-center">
+            <h2>重庆时时彩预警复盘</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-2 pull-right">
+            <a th:href="@{/cqssc/index}" class="btn btn-sm btn-default">回到首页</a>
+        </div>
+    </div>
+
+    <hr/>
+
+    <table id="gambleTable" class="table">
+    </table>
+    <div class="row" style="margin-top: 35px;"></div>
+</div>
+
+</div>
+
+</body>
+
+<script th:src="@{/static/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/static/bootstrap/js/bootstrap.js}"></script>
+<script th:src="@{/static/bootstrap-table/bootstrap-table.js}"></script>
+<script th:src="@{/static/layer/layer.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var context = /*[[@{/}]]*/;
+    /*]]>*/
+</script>
+
+<script type="text/javascript">
+
+    $(function () {
+
+    $('#gambleTable').bootstrapTable({
+        url:context + 'cqssc/warning/result/data',
+        dataType: "json",
+        striped: true,                      //是否显示行间隔色
+        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        sortable: false,                    //是否启用排序
+        showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+        cardView: false,                    //是否显示详细视图
+        pagination:true,                    //设置分页
+        pageSize: 10,                       //每页的记录行数（*）
+        sidePagination:"server",            //分页方式：client客户端分页，server服务端分页（*）
+        pageList:[5,10,20,30],//分页步进值
+        responseHandler:responseHandler,//请求数据成功后，渲染表格前的方法
+        /*onLoadSuccess: function () {
+            return false;
+        },*/
+        columns: [{
+            field: 'location',
+            title: '位置',
+            width: '10%'
+        }, {
+            field: 'paramName',
+            title: '号码名称',
+            width: '15%'
+        }, {
+            field: 'paramAmount',
+            title: '注数',
+            width: '8%'
+        }, {
+            field: 'currentExpect',
+            title: '当前期数',
+            width: '8%'
+        }, {
+            field: 'lastExpect',
+            title: '上次中奖期数',
+            width: '8%'
+        }, {
+            field: 'resultPeriod',
+            title: '预警后中奖',
+            width: '8%'
+        }]
+    });
+    });
+
+    function responseHandler(result){
+        console.info(result);
+        return {
+            total : result.total, //总页数,前面的key必须为"total"
+            rows : result.list //行数据，前面的key要与之前设置的dataField的值一致.
+        };
+    };
+
+</script>
+
+</html>

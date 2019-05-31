@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ranying.cqssc.dao.LotteryParamDAO">
+  <resultMap id="BaseResultMap" type="com.ranying.cqssc.entity.LotteryParam">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="numbers" jdbcType="VARCHAR" property="numbers" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="wqb" jdbcType="INTEGER" property="wqb" />
+    <result column="wqs" jdbcType="INTEGER" property="wqs" />
+    <result column="wqg" jdbcType="INTEGER" property="wqg" />
+    <result column="wbs" jdbcType="INTEGER" property="wbs" />
+    <result column="wbg" jdbcType="INTEGER" property="wbg" />
+    <result column="wsg" jdbcType="INTEGER" property="wsg" />
+    <result column="qbs" jdbcType="INTEGER" property="qbs" />
+    <result column="qbg" jdbcType="INTEGER" property="qbg" />
+    <result column="qsg" jdbcType="INTEGER" property="qsg" />
+    <result column="bsg" jdbcType="INTEGER" property="bsg" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, numbers, amount, wqb, wqs, wqg, wbs, wbg, wsg, qbs, qbg, qsg, bsg
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from lottery_param
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from lottery_param
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ranying.cqssc.entity.LotteryParam">
+    insert into lottery_param (id, `name`, numbers,
+    amount, wqb, wqs, wqg,
+    wbs, wbg, wsg, qbs,
+    qbg, qsg, bsg)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{numbers,jdbcType=VARCHAR},
+    #{amount,jdbcType=INTEGER}, #{wqb,jdbcType=INTEGER}, #{wqs,jdbcType=INTEGER}, #{wqg,jdbcType=INTEGER},
+    #{wbs,jdbcType=INTEGER}, #{wbg,jdbcType=INTEGER}, #{wsg,jdbcType=INTEGER}, #{qbs,jdbcType=INTEGER},
+    #{qbg,jdbcType=INTEGER}, #{qsg,jdbcType=INTEGER}, #{bsg,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ranying.cqssc.entity.LotteryParam">
+    insert into lottery_param
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="numbers != null">
+        numbers,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="wqb != null">
+        wqb,
+      </if>
+      <if test="wqs != null">
+        wqs,
+      </if>
+      <if test="wqg != null">
+        wqg,
+      </if>
+      <if test="wbs != null">
+        wbs,
+      </if>
+      <if test="wbg != null">
+        wbg,
+      </if>
+      <if test="wsg != null">
+        wsg,
+      </if>
+      <if test="qbs != null">
+        qbs,
+      </if>
+      <if test="qbg != null">
+        qbg,
+      </if>
+      <if test="qsg != null">
+        qsg,
+      </if>
+      <if test="bsg != null">
+        bsg,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="numbers != null">
+        #{numbers,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=INTEGER},
+      </if>
+      <if test="wqb != null">
+        #{wqb,jdbcType=INTEGER},
+      </if>
+      <if test="wqs != null">
+        #{wqs,jdbcType=INTEGER},
+      </if>
+      <if test="wqg != null">
+        #{wqg,jdbcType=INTEGER},
+      </if>
+      <if test="wbs != null">
+        #{wbs,jdbcType=INTEGER},
+      </if>
+      <if test="wbg != null">
+        #{wbg,jdbcType=INTEGER},
+      </if>
+      <if test="wsg != null">
+        #{wsg,jdbcType=INTEGER},
+      </if>
+      <if test="qbs != null">
+        #{qbs,jdbcType=INTEGER},
+      </if>
+      <if test="qbg != null">
+        #{qbg,jdbcType=INTEGER},
+      </if>
+      <if test="qsg != null">
+        #{qsg,jdbcType=INTEGER},
+      </if>
+      <if test="bsg != null">
+        #{bsg,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ranying.cqssc.entity.LotteryParam">
+    update lottery_param
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="numbers != null">
+        numbers = #{numbers,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=INTEGER},
+      </if>
+      <if test="wqb != null">
+        wqb = #{wqb,jdbcType=INTEGER},
+      </if>
+      <if test="wqs != null">
+        wqs = #{wqs,jdbcType=INTEGER},
+      </if>
+      <if test="wqg != null">
+        wqg = #{wqg,jdbcType=INTEGER},
+      </if>
+      <if test="wbs != null">
+        wbs = #{wbs,jdbcType=INTEGER},
+      </if>
+      <if test="wbg != null">
+        wbg = #{wbg,jdbcType=INTEGER},
+      </if>
+      <if test="wsg != null">
+        wsg = #{wsg,jdbcType=INTEGER},
+      </if>
+      <if test="qbs != null">
+        qbs = #{qbs,jdbcType=INTEGER},
+      </if>
+      <if test="qbg != null">
+        qbg = #{qbg,jdbcType=INTEGER},
+      </if>
+      <if test="qsg != null">
+        qsg = #{qsg,jdbcType=INTEGER},
+      </if>
+      <if test="bsg != null">
+        bsg = #{bsg,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ranying.cqssc.entity.LotteryParam">
+    update lottery_param
+    set `name` = #{name,jdbcType=VARCHAR},
+    numbers = #{numbers,jdbcType=VARCHAR},
+    amount = #{amount,jdbcType=INTEGER},
+    wqb = #{wqb,jdbcType=INTEGER},
+    wqs = #{wqs,jdbcType=INTEGER},
+    wqg = #{wqg,jdbcType=INTEGER},
+    wbs = #{wbs,jdbcType=INTEGER},
+    wbg = #{wbg,jdbcType=INTEGER},
+    wsg = #{wsg,jdbcType=INTEGER},
+    qbs = #{qbs,jdbcType=INTEGER},
+    qbg = #{qbg,jdbcType=INTEGER},
+    qsg = #{qsg,jdbcType=INTEGER},
+    bsg = #{bsg,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="findAll" resultMap="BaseResultMap">
+    select t.* from lottery_param t
+  </select>
+
+  <select id="listByQuery" resultType="com.ranying.cqssc.entity.LotteryParam">
+    SELECT * FROM lottery_param
+    <where>
+      <if test="name!=null">
+        and name = #{name}
+      </if>
+      <if test="numbers!=null">
+        and numbers = #{numbers}
+      </if>
+    </where>
+  </select>
+</mapper>

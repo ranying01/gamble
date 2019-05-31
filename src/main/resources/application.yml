@@ -1,0 +1,74 @@
+server:
+  port: 80
+  servlet.context-path: /gamble
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/gamble?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 1234
+    driverClassName: com.mysql.jdbc.Driver
+    initialSize: 20
+    minIdle: 20
+    maxActive: 200
+    maxWait: 60000
+  mvc:
+    static-path-pattern:  /static/**
+  devtools:
+    restart:
+      enabled: true
+
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    mode: HTML5
+
+# 重庆时时彩
+lottery:
+  api: http://b.apiplus.net/daily.do?token=tdede07ae0e0cc022k&code=cqssc&format=json
+
+#广东11选5  https://www.caipiaokong.com/
+gdsyxw:
+  api: http://api.caipiaokong.cn/lottery/?name=gdsyxw&format=json&uid=1309287&token=8029e724ac6951940b5a988e36c7276ceff98eef
+
+#上海11选5
+shsyxw:
+  api: http://api.caipiaokong.cn/lottery/?name=shsyxw&format=json&uid=1312037&token=22ff21ab80018e1185686eb9a1e6eb16888490ec
+
+#江苏11选5
+jssyxw:
+  api: http://api.caipiaokong.cn/lottery/?name=jssyxw&format=json&uid=1312037&token=22ff21ab80018e1185686eb9a1e6eb16888490ec
+
+#江西11选5
+jxsyxw:
+  api: http://api.caipiaokong.cn/lottery/?name=jxsyxw&format=json&uid=1312037&token=22ff21ab80018e1185686eb9a1e6eb16888490ec
+
+#山东11选5
+sdsyxw:
+  api: http://api.caipiaokong.cn/lottery/?name=sdsyydj&format=json&uid=1312037&token=22ff21ab80018e1185686eb9a1e6eb16888490ec
+
+#阿里云短信
+sms:
+  api:
+    url: http://yzxyzm.market.alicloudapi.com/yzx/verifySms
+    appKey: 24745121
+    appcode: 2a531df4a4184dba93f7038491b47e26
+    appSecret: 430c9658bcf9c56fc044d647c98a7dd2
+
+mybatis:
+  typeAliasesPackage: com.ranying.entity
+  mapperLocations: classpath:mapper/*.xml
+
+pagehelper:
+    helperDialect: mysql                           #分页插件方言选择
+    reasonable: true                               #合理化参数，设为true时pageNum<=0 时会查第一页， pageNum>pages（超过总数时），会查询最后一页
+    supportMethodsArguments: true
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    com.ranying.dao: info
+    com.seamax.bdsearch.dao: info
+

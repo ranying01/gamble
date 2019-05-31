@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>重庆时时彩辅助工具</title>
+    <!-- <meta name="viewport" content="width=device-width,initial-scale=1.0"> -->
+    <link rel="stylesheet" th:href="@{/static/bootstrap/css/bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{/static/bootstrap-table/bootstrap-table.css}"/>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <table id="paramTable" class="table">
+        </table>
+    </div>
+</div>
+
+</body>
+
+<script th:src="@{/static/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/static/bootstrap/js/bootstrap.js}"></script>
+<script th:src="@{/static/bootstrap-table/bootstrap-table.js}"></script>
+<script th:src="@{/static/layer/layer.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var context = /*[[@{/}]]*/;
+    /*]]>*/
+</script>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $('#paramTable').bootstrapTable({
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: false,                    //是否启用排序
+            pageSize: 10,                       //每页的记录行数（*）
+            search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+            showColumns: true,                  //是否显示所有的列
+            showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                  //是否显示父子表
+            columns: [{
+                field: 'name',
+                title: '名称',
+                width: '10%'
+            }, {
+                field: 'numbers',
+                title: '参数详情',
+                width: '40%'
+            }, {
+                field: 'amount',
+                title: '注数',
+                width: '5%',
+            }, {
+                field: 'id',
+                title: '历史最大遗漏',
+                width: '20%',
+                formatter: function (id, row) {
+                    return ' 万千百(' + row.wqb + ")  " +
+                        ' 万千十(' + row.wqs + ")  " +
+                        ' 万千个(' + row.wqg + ")  " +
+                        ' 万百十(' + row.wbs + ")  " +
+                        ' 万百个(' + row.wbg + ")  " +
+                        ' 万十个(' + row.wsg + ")  " +
+                        ' 千百十(' + row.qbs + ")  " +
+                        ' 千百个(' + row.qbg + ")  " +
+                        ' 千十个(' + row.qsg + ")  " +
+                        ' 百十个(' + row.bsg + ")  ";
+
+                }
+            }, {
+                field: 'id',
+                title: '操作',
+                width: '18%',
+                align: 'center',
+                formatter: function (id, row) {
+                    return '<button class="btn btn-xs btn-ms btn-success" onclick="analyze(' + id + ')">分析</button>' +
+                        '<button class="btn btn-xs btn-ms btn-danger col-xs-offset-1 col-sm-offset-1" data-id="' + row.id + '" data-name="' + row.name + '" onclick="deleteParam(this)">删除</button>';
+                }
+            }]
+        });
+        listData();
+    });
+
+    function deleteParam(_this) {
+        var $this = $(_this);
+        var name = $this.data("name");
+        var id = $this.data("id");
+        layer.confirm('您确定删除 “' + name + '” 吗？', {
+            btn: ['确定', '取消'], //按钮
+            offset: "[20%]",
+            title: '删除参数',
+        }, function () {
+            $.ajax({
+                url: context + 'cqssc/param/delete/' + id,
+                type: 'post',
+                dataType: "json",
+                success: function (result) {
+                    //$("#paramTable").bootstrapTable('refresh');
+                    layer.msg('删除成功', {icon: 1});
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 1000);
+                },
+                fail: function () {
+                    layer.alert('删除失败');
+                }
+            });
+        }, function () {
+
+        });
+    }
+
+    function listData() {
+        var index = layer.load(1);
+        $.ajax({
+            url: context + 'cqssc/param/data',
+            type: 'post',
+            dataType: "json",
+            success: function (result) {
+                $("#paramTable").bootstrapTable('load', result);
+                layer.close(index);
+            }
+        });
+    }
+
+    function analyze(id) {
+        layer.open({
+            type: 2,
+            area: ['90%', '90%'],
+            fixed: false, //不固定
+            maxmin: true,
+            title: '分析结果',
+            content: context + 'cqssc/param/' + id + '/param_analyze'
+        });
+    }
+
+</script>
+
+</html>

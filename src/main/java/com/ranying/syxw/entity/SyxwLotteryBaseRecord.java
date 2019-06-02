@@ -49,6 +49,11 @@ public class SyxwLotteryBaseRecord {
      */
     private Integer warningStatisticFlag;
 
+    /**
+     * 排序后的结果
+     */
+    private String codes;
+
     public String getExpect() {
         return expect;
     }
@@ -119,5 +124,13 @@ public class SyxwLotteryBaseRecord {
 
     public void setWarningStatisticFlag(Integer warningStatisticFlag) {
         this.warningStatisticFlag = warningStatisticFlag;
+    }
+
+    public String getCodes() {
+        return codes;
+    }
+
+    public void setCodes(String codes) {
+        this.codes = codes;
     }
 }

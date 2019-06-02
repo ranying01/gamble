@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8888
   servlet.context-path: /gamble
 
 spring:
@@ -27,7 +27,8 @@ spring:
 
 # 重庆时时彩
 lottery:
-  api: http://b.apiplus.net/daily.do?token=tdede07ae0e0cc022k&code=cqssc&format=json
+  #api: http://b.apiplus.net/daily.do?token=tdede07ae0e0cc022k&code=cqssc&format=json
+  api: http://api.caipiaokong.cn/lottery/?name=cqssc&format=json&uid=1312037&token=22ff21ab80018e1185686eb9a1e6eb16888490ec
 
 #广东11选5  https://www.caipiaokong.com/
 gdsyxw:
@@ -56,6 +57,9 @@ sms:
     appKey: 24745121
     appcode: 2a531df4a4184dba93f7038491b47e26
     appSecret: 430c9658bcf9c56fc044d647c98a7dd2
+
+task:
+  flag: false
 
 mybatis:
   typeAliasesPackage: com.ranying.entity

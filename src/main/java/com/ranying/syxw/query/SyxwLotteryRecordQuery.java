@@ -13,6 +13,8 @@ public class SyxwLotteryRecordQuery implements Serializable {
 
     private List<String[]> lotteryNumbers;
 
+    private List<String> codesList;
+
     private Integer limit;
 
     public Integer getLimit() {
@@ -45,5 +47,13 @@ public class SyxwLotteryRecordQuery implements Serializable {
 
     public void setTable(String table) {
         this.table = table;
+    }
+
+    public List<String> getCodesList() {
+        return codesList;
+    }
+
+    public void setCodesList(List<String> codesList) {
+        this.codesList = codesList;
     }
 }

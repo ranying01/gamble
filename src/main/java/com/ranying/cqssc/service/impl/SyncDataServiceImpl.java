@@ -1,6 +1,5 @@
 package com.ranying.cqssc.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ranying.cqssc.constant.LotteryConstant;
 import com.ranying.cqssc.dao.LotteryParamDAO;
@@ -21,6 +20,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class SyncDataServiceImpl implements SyncDataService {
@@ -58,14 +58,14 @@ public class SyncDataServiceImpl implements SyncDataService {
         }
         String resultStr = HttpClientUtil.doGet(url);
         System.out.println(resultStr);
-        List<LotteryRecord> records = getRecords(resultStr);
+        List<LotteryRecord> records = this.getRecords(resultStr);
         lotteryRecordDAO.batchInsert(records);
     }
 
     @Override
     public void sync(Date date) {
         // 获取期数
-        String dateStr = DateFormat.dateFormateYmd(date);
+        String dateStr = DateFormat.dateFormateBriefYmd(date);
         url = url + "&date=" + dateStr;
         try {
             Thread.sleep(10000);
@@ -87,22 +87,23 @@ public class SyncDataServiceImpl implements SyncDataService {
     private List<LotteryRecord> getRecords(String resultStr) {
 
         JSONObject jsonObject = JSONObject.parseObject(resultStr);
-        JSONArray jsonArray = jsonObject.getJSONArray("data");
+        Set<String> keySet = jsonObject.keySet();
         List<LotteryRecord> records = new ArrayList<>();
-        for (int i = 0; i < jsonArray.size(); i++) {
-            JSONObject obj = (JSONObject) jsonArray.get(i);
+        for (String key : keySet) {
+            JSONObject obj = (JSONObject) jsonObject.get(key);
+            String number = obj.getString("number");
             LotteryRecord lotteryRecord = new LotteryRecord();
-            String expect = obj.getString("expect");
-            lotteryRecord.setExpect(expect);
-            String opencode = obj.getString("opencode");
-            String[] numbers = opencode.split(",");
+            lotteryRecord.setExpect(key);
+            String[] numbers = number.split(",");
             lotteryRecord.setOpencode1(Integer.valueOf(numbers[0]));
             lotteryRecord.setOpencode2(Integer.valueOf(numbers[1]));
             lotteryRecord.setOpencode3(Integer.valueOf(numbers[2]));
             lotteryRecord.setOpencode4(Integer.valueOf(numbers[3]));
             lotteryRecord.setOpencode5(Integer.valueOf(numbers[4]));
-            lotteryRecord.setOpentime(obj.getDate("opentime"));
-            lotteryRecord.setOpentimestamp(obj.getLong("opentimestamp"));
+            Date openTime = obj.getDate("dateline");
+            lotteryRecord.setOpentime(openTime);
+            lotteryRecord.setOpentimestamp(openTime.getTime());
+            lotteryRecord.setWarningStatisticFlag(0);
             records.add(lotteryRecord);
         }
         return records;
@@ -110,11 +111,11 @@ public class SyncDataServiceImpl implements SyncDataService {
 
     @Override
     public List<GenerateRow> generate(LotteryParam lotteryParam) {
-        return  this.generate(lotteryParam,null);
+        return this.generate(lotteryParam, null);
     }
 
     @Override
-    public List<GenerateRow> generate(LotteryParam lotteryParam,Integer warningFlag) {
+    public List<GenerateRow> generate(LotteryParam lotteryParam, Integer warningFlag) {
 
         List<GenerateRow> rows = new ArrayList<>();
         List<String> queryList = lotteryParam.getNumberList();

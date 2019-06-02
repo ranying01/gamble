@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -161,6 +162,7 @@ public class SyxwLotteryParam implements Serializable {
             throw new RuntimeException("输入格式不正确");
         }
         String[] numberArray = numbers.split(",");
+        Arrays.sort(numberArray);
         List<String[]> queryList = new ArrayList<>();
         for (String subNumberStr : numberArray) {
             String[] group = subNumberStr.split("\\s+");
@@ -168,4 +170,24 @@ public class SyxwLotteryParam implements Serializable {
         }
         return queryList;
     }
+
+    public List<String> getCodes() {
+        String numbers = getNumbers();
+        if (StringUtils.isBlank(numbers)) {
+            throw new RuntimeException("输入格式不正确");
+        }
+        String[] numberArray = numbers.split(",");
+        List<String> queryList = new ArrayList<>();
+        for (String subNumberStr : numberArray) {
+            String[] group = subNumberStr.split("\\s+");
+            Arrays.sort(group);
+            StringBuilder groupStr = new StringBuilder();
+            for (String g : group) {
+                groupStr.append(g + ",");
+            }
+            queryList.add(groupStr.toString().substring(0, groupStr.length() - 1));
+        }
+        return queryList;
+    }
+
 }

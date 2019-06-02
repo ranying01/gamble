@@ -43,4 +43,14 @@ public class SyxwParamQuery implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
+
+    public SyxwParamQuery getCopy(){
+        SyxwParamQuery query = new SyxwParamQuery();
+        query.setType(this.type);
+        query.setName(this.name);
+        query.setNumbers(this.numbers);
+        query.setId(this.id);
+        return query;
+    }
+
 }

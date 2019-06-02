@@ -46,13 +46,18 @@ public class SyxwSyncDataController {
     }
 
     @RequestMapping("sync_date")
-    public void syncDate(String dateStr) throws ParseException {
+    public void syncDate(String dateStr) throws ParseException, InterruptedException {
         if (StringUtils.isBlank(dateStr)) {
             return;
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse(dateStr);
-        syncDataService.sync(SyxwConstant.LotteryType.GD, date);
+
+        for (String key : SyxwConstant.SYXW_TYPE_MAP.keySet()) {//keySet获取map集合key的集合  然后在遍历key即可
+            SyxwConstant.LotteryType type =  SyxwConstant.SYXW_TYPE_MAP.get(key);
+            Thread.sleep(5000);
+            syncDataService.sync(type, date);
+        }
     }
 
     @RequestMapping("search_max_neglect")
@@ -62,7 +67,7 @@ public class SyxwSyncDataController {
             SyxwMaxNeglectResult maxNeglect = syncDataService.searchMaxNeglect(type, numbers);
             result.setData(maxNeglect);
             result.setCode(200);
-        }catch (Exception e){
+        } catch (Exception e) {
             result.setCode(500);
             result.setMessage(e.getMessage());
         }

@@ -2,6 +2,7 @@ package com.ranying.syxw.task;
 
 import com.ranying.syxw.constant.SyxwConstant;
 import com.ranying.syxw.service.SyxwSyncDataService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,9 @@ import java.util.Date;
 @EnableScheduling
 public class SyxwScheduledTasks {
 
+    @Value("${task.flag}")
+    private Boolean taskFlag;
+
     @Resource
     private SyxwSyncDataService syncDataService;
 
@@ -22,13 +26,20 @@ public class SyxwScheduledTasks {
      */
     @Scheduled(cron = "46 5 0 * * ?")
     public void syncYesterday() {
+        if (!taskFlag) {
+            return;
+        }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         this.processSync(calendar.getTime());
+
     }
 
     private void processSync(Date date) {
+        if (!taskFlag) {
+            return;
+        }
         try {
             syncDataService.sync(SyxwConstant.LotteryType.GD, date);
             Thread.sleep(10000);
@@ -47,6 +58,9 @@ public class SyxwScheduledTasks {
     //每10分钟执行一次,同步数据
     @Scheduled(cron = "0 */3 *  * * *")
     public void sync() {
+        if (!taskFlag) {
+            return;
+        }
         Date date = new Date();
         this.processSync(date);
     }

@@ -8,15 +8,15 @@ import java.util.Map;
  */
 public class SyxwConstant {
 
-    public static Map<String,LotteryType> SYXW_TYPE_MAP;
+    public static Map<String, LotteryType> SYXW_TYPE_MAP;
 
     static {
-        SYXW_TYPE_MAP= new HashMap<>();
-        SYXW_TYPE_MAP.put(LotteryType.GD.getValue(),LotteryType.GD);
-        SYXW_TYPE_MAP.put(LotteryType.JX.getValue(),LotteryType.JX);
-        SYXW_TYPE_MAP.put(LotteryType.SH.getValue(),LotteryType.SH);
-        SYXW_TYPE_MAP.put(LotteryType.SD.getValue(),LotteryType.SD);
-        SYXW_TYPE_MAP.put(LotteryType.JS.getValue(),LotteryType.JS);
+        SYXW_TYPE_MAP = new HashMap<>();
+        SYXW_TYPE_MAP.put(LotteryType.GD.getValue(), LotteryType.GD);
+        SYXW_TYPE_MAP.put(LotteryType.JX.getValue(), LotteryType.JX);
+        SYXW_TYPE_MAP.put(LotteryType.SH.getValue(), LotteryType.SH);
+        SYXW_TYPE_MAP.put(LotteryType.SD.getValue(), LotteryType.SD);
+        SYXW_TYPE_MAP.put(LotteryType.JS.getValue(), LotteryType.JS);
     }
 
     public enum LotteryType {
@@ -24,8 +24,7 @@ public class SyxwConstant {
         JX("jx11x5", "江西11选5"),
         SH("sh11x5", "上海11选5"),
         SD("sd11x5", "山东11选5"),
-        JS("js11x5", "江苏11选5"),
-        ;
+        JS("js11x5", "江苏11选5");
 
         private String value;
 
@@ -35,7 +34,6 @@ public class SyxwConstant {
             this.value = value;
             this.name = name;
         }
-
 
 
         public String getValue() {

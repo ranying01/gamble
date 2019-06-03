@@ -3,6 +3,7 @@ package com.ranying.cqssc.task;
 import com.ranying.cqssc.service.NotifyService;
 import com.ranying.cqssc.service.SyncDataService;
 import com.ranying.cqssc.service.WarningResultsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -27,11 +28,17 @@ public class ScheduledTasks {
 
     // @Scheduled(fixedRate = 1000 * 30)
 
+    @Value("${task.flag}")
+    private Boolean taskFlag;
+
     /**
      * 每天凌晨 0点 5分 30 秒 同步上一天的数据，解决12点以后不同步数据的bug
      */
     @Scheduled(cron = "30 6 0 * * ?")
     public void syncYesterday() {
+        if (!taskFlag) {
+            return;
+        }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
@@ -50,12 +57,18 @@ public class ScheduledTasks {
     //每20分钟执行一次,同步数据
     @Scheduled(cron = "0 */5 *  * * *")
     public void sync() {
+        if (!taskFlag) {
+            return;
+        }
         syncDataService.sync(new Date());
     }
 
     //每15分钟执行一次
     @Scheduled(cron = "0 */15 * * * *")
     public void statisticsWarning() {
+        if (!taskFlag) {
+            return;
+        }
         warningResultsService.statisticsWarning();
     }
 

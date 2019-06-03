@@ -34,35 +34,9 @@
             <if test="expect!=null">
                 and expect = #{expect}
             </if>
-            <foreach collection="lotteryNumbers" item="numbers" separator="or">
-
-                opencode1 in(
-                <foreach collection="numbers" item="number" separator=",">
-                    #{number}
-                </foreach>
-                )
-                and  opencode2 in(
-                <foreach collection="numbers" item="number" separator=",">
-                    #{number}
-                </foreach>
-                )
-                and  opencode3 in(
-                <foreach collection="numbers" item="number" separator=",">
-                    #{number}
-                </foreach>
-                )
-                and  opencode4 in(
-                <foreach collection="numbers" item="number" separator=",">
-                    #{number}
-                </foreach>
-                )
-                and  opencode5 in(
-                <foreach collection="numbers" item="number" separator=",">
-                    #{number}
-                </foreach>
-                )
+            <foreach collection="codesList" item="codes" separator="or">
+               codes = #{codes}
             </foreach>
-
         </where>
         order by expect desc
         <if test="limit!=null">
@@ -96,11 +70,11 @@
     </delete>
     <insert id="insert" parameterType="com.ranying.syxw.entity.SyxwLotteryBaseRecord">
         insert into  ${table} (expect, opencode1, opencode2,
-        opencode3, opencode4, opencode5,
+        opencode3, opencode4, opencode5,codes,
         opentime, opentimestamp, warning_statistic_flag
         )
         values (#{expect,jdbcType=VARCHAR}, #{opencode1,jdbcType=CHAR}, #{opencode2,jdbcType=CHAR},
-        #{opencode3,jdbcType=CHAR}, #{opencode4,jdbcType=CHAR}, #{opencode5,jdbcType=CHAR},
+        #{opencode3,jdbcType=CHAR}, #{opencode4,jdbcType=CHAR}, #{opencode5,jdbcType=CHAR}, #{record.codes,jdbcType=CHAR},
         #{opentime,jdbcType=TIMESTAMP}, #{opentimestamp,jdbcType=BIGINT}, #{warningStatisticFlag,jdbcType=INTEGER}
         )
     </insert>
@@ -108,7 +82,7 @@
     <insert id="batchInsert">
         insert into ${table}
         (expect, opencode1, opencode2,
-        opencode3, opencode4, opencode5,
+        opencode3, opencode4, opencode5,codes,
         opentime, opentimestamp
         )
         values
@@ -116,6 +90,7 @@
             (
             #{record.expect,jdbcType=VARCHAR}, #{record.opencode1,jdbcType=CHAR}, #{record.opencode2,jdbcType=CHAR},
             #{record.opencode3,jdbcType=CHAR}, #{record.opencode4,jdbcType=CHAR}, #{record.opencode5,jdbcType=CHAR},
+            #{record.codes,jdbcType=CHAR},
             #{record.opentime,jdbcType=TIMESTAMP}, #{record.opentimestamp,jdbcType=BIGINT}
             )
         </foreach>
@@ -126,6 +101,7 @@
         opencode3 = VALUES(opencode3),
         opencode4 = VALUES(opencode4),
         opencode5 = VALUES(opencode5),
+        codes = VALUES(codes),
         opentime = VALUES(opentime),
         opentimestamp = VALUES(opentimestamp)
     </insert>

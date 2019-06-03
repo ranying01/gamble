@@ -29,8 +29,7 @@ public class SyxwParamController {
     @RequestMapping(value = "/data")
     @ResponseBody
     public List<SyxwLotteryParam> data(SyxwParamQuery syxwParamQuery) {
-        List<SyxwLotteryParam>  list = syxwLotteryParamService.list(syxwParamQuery);
-        return list;
+        return syxwLotteryParamService.list(syxwParamQuery);
     }
 
     @RequestMapping(value = "/delete/{id}")

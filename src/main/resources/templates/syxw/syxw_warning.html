@@ -2,10 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>十一选五</title>
-    <head>
-        <link rel="stylesheet" th:href="@{/static/bootstrap/css/bootstrap.css}"/>
-        <link rel="stylesheet" th:href="@{/static/bootstrap-table/bootstrap-table.css}"/>
-    </head>
+    <link rel="stylesheet" th:href="@{/static/bootstrap/css/bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{/static/bootstrap-table/bootstrap-table.css}"/>
 </head>
 <body>
 
@@ -113,7 +111,7 @@
                 }
                 return value;
             }
-        },{
+        }, {
             field: 'paramName',
             title: '号码名称',
             width: '15%'
@@ -162,7 +160,7 @@
         var index = layer.load(1);
         $.ajax({
             url: context + '/syxw/warning/data',
-            data:$("#queryForm").serialize(),
+            data: $("#queryForm").serialize(),
             type: 'post',
             dataType: "json",
             success: function (generateRows) {

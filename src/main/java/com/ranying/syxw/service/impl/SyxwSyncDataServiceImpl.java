@@ -44,8 +44,9 @@ public class SyxwSyncDataServiceImpl implements SyxwSyncDataService {
 
     private SyxwLotteryRecordQuery getSyxwLotteryRecordQuery(SyxwLotteryParam lotteryParam) {
         SyxwLotteryRecordQuery syxwLotteryQuery = new SyxwLotteryRecordQuery();
-        List<String[]> queryList = lotteryParam.getNumberList();
-        syxwLotteryQuery.setLotteryNumbers(queryList);
+        // List<String[]> queryList = lotteryParam.getNumberList();
+        // syxwLotteryQuery.setLotteryNumbers(queryList);
+        syxwLotteryQuery.setCodesList(lotteryParam.getCodes());
         syxwLotteryQuery.setTable(this.getTableName(lotteryParam.getType()));
         syxwLotteryQuery.setLimit(2);
         return syxwLotteryQuery;
@@ -94,7 +95,7 @@ public class SyxwSyncDataServiceImpl implements SyxwSyncDataService {
     @Override
     public List<SyxwGenerateRow> generate(SyxwLotteryParam lotteryParam) {
         List<SyxwGenerateRow> rows = new ArrayList<>();
-        SyxwLotteryRecordQuery syxwLotteryQuery = getSyxwLotteryRecordQuery(lotteryParam);
+        SyxwLotteryRecordQuery syxwLotteryQuery = this.getSyxwLotteryRecordQuery(lotteryParam);
         List<SyxwLotteryBaseRecord> list = syxwLotteryRecordBaseDAO.list(syxwLotteryQuery);
         SyxwGenerateRow syxwGenerateRow = new SyxwGenerateRow();
         if (list.isEmpty()) {
@@ -182,6 +183,8 @@ public class SyxwSyncDataServiceImpl implements SyxwSyncDataService {
             lotteryRecord.setOpentime(obj.getDate("dateline"));
             lotteryRecord.setOpentimestamp(lotteryRecord.getOpentime().getTime());
             lotteryRecord.setWarningStatisticFlag(0);
+            Arrays.sort(numbers);
+            lotteryRecord.setCodes(numbers[0]+","+numbers[1]+","+numbers[2]+","+numbers[3]+","+numbers[4]);
             records.add(lotteryRecord);
         }
         return records;

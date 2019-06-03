@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class GambleApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GambleApplication.class);
+        SpringApplication.run(GambleApplication.class,args);
     }
 
 }

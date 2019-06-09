@@ -73,7 +73,6 @@ public class SyncDataServiceImpl implements SyncDataService {
             //do nothing
         }
         String resultStr = HttpClientUtil.doGet(url);
-        System.out.println(resultStr);
         List<LotteryRecord> records = getRecords(resultStr);
         lotteryRecordDAO.batchInsert(records);
     }

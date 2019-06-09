@@ -1,5 +1,8 @@
 package com.ranying.syxw.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.ranying.common.PageParam;
 import com.ranying.syxw.constant.SyxwConstant;
 import com.ranying.syxw.dao.SyxwLotteryParamDAO;
 import com.ranying.syxw.entity.SyxwLotteryParam;
@@ -35,6 +38,14 @@ public class SyxwLotteryParamServiceImpl implements SyxwLotteryParamService {
             lotteryParam.setType(entry.getKey());
             this.save(lotteryParam);
         }
+    }
+
+    @Override
+    public PageInfo<SyxwLotteryParam> list(SyxwParamQuery query, PageParam pageParam) {
+        PageHelper.startPage(pageParam.getPageNumber(), pageParam.getPageSize());
+        List<SyxwLotteryParam> list = syxwLotteryParamDAO.listByQuery(query);
+        PageInfo<SyxwLotteryParam> pageInfo = new PageInfo<>(list);
+        return pageInfo;
     }
 
     @Override

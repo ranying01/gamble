@@ -34,9 +34,13 @@
             <if test="expect!=null">
                 and expect = #{expect}
             </if>
-            <foreach collection="codesList" item="codes" separator="or">
-               codes = #{codes}
-            </foreach>
+            <if test="codesList!=null and codesList.size()>0">
+                and codes in (
+                    <foreach collection="codesList" item="codes" separator=",">
+                        #{codes}
+                    </foreach>
+                )
+            </if>
         </where>
         order by expect desc
         <if test="limit!=null">

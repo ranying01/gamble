@@ -1,5 +1,7 @@
 package com.ranying.syxw.controller;
 
+import com.github.pagehelper.PageInfo;
+import com.ranying.common.PageParam;
 import com.ranying.syxw.entity.SyxwLotteryParam;
 import com.ranying.syxw.query.SyxwParamQuery;
 import com.ranying.syxw.service.SyxwLotteryParamService;
@@ -30,6 +32,12 @@ public class SyxwParamController {
     @ResponseBody
     public List<SyxwLotteryParam> data(SyxwParamQuery syxwParamQuery) {
         return syxwLotteryParamService.list(syxwParamQuery);
+    }
+
+    @RequestMapping(value = "/list")
+    @ResponseBody
+    public PageInfo<SyxwLotteryParam> list(SyxwParamQuery syxwParamQuery, PageParam pageParam) {
+        return syxwLotteryParamService.list(syxwParamQuery,pageParam);
     }
 
     @RequestMapping(value = "/delete/{id}")
@@ -65,7 +73,6 @@ public class SyxwParamController {
         syxwLotteryParam.setId(id);
         syxwLotteryParamService.update(syxwLotteryParam);
         return Result.SUCCESS;
-
     }
 
     @PostMapping(value = "/analyze/{id}")

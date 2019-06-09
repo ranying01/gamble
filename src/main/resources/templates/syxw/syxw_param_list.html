@@ -71,16 +71,20 @@
         });
 
         $('#paramTable').bootstrapTable({
+            url: context + '/syxw/param/list',
+            dataType: "json",
             striped: true,                      //是否显示行间隔色
             cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
             pagination: true,                   //是否显示分页（*）
             sortable: false,                    //是否启用排序
             pageSize: 10,                       //每页的记录行数（*）
+            pageList:[5,10,20,30],//分页步进值
+            sidePagination:"server",            //分页方式：client客户端分页，server服务端分页（*）
             search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
             showColumns: true,                  //是否显示所有的列
             showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
             cardView: false,                    //是否显示详细视图
-            detailView: false,                  //是否显示父子表
+            responseHandler:responseHandler,//请求数据成功后，渲染表格前的方法
             columns: [{
                 field: 'name',
                 title: '名称',
@@ -109,7 +113,7 @@
                 width: '40%',
                 formatter: function (value) {
                     if (value.length > 100) {
-                        return '<a href="#" title="' + value + '">' + value.substr(0, 100) + '...</a> ';
+                        return '<a href="javascript:void(0);"  title="' + value + '">' + value.substr(0, 100) + '...</a> ';
                     }
                     return value;
                 }
@@ -136,6 +140,13 @@
         });
         listData();
     });
+
+    function responseHandler(result){
+        return {
+            total : result.total, //总页数,前面的key必须为"total"
+            rows : result.list //行数据，前面的key要与之前设置的dataField的值一致.
+        };
+    };
 
     function deleteParam(_this) {
         var $this = $(_this);
@@ -168,7 +179,10 @@
 
     function listData() {
         var index = layer.load(1);
-        $.ajax({
+        $('#bootStrapTableId').bootstrapTable('refresh');
+        layer.close(index);
+
+        /*$.ajax({
             url: context + '/syxw/param/data',
             data: $("#queryForm").serialize(),
             type: 'post',
@@ -177,7 +191,7 @@
                 $("#paramTable").bootstrapTable('load', result);
                 layer.close(index);
             }
-        });
+        });*/
     }
 
     function analyze(id) {

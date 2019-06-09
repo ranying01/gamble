@@ -49,7 +49,7 @@
     $(function () {
 
     $('#gambleTable').bootstrapTable({
-        url:context + 'cqssc/warning/result/data',
+        url: context + 'cqssc/warning/result/data',
         dataType: "json",
         striped: true,                      //是否显示行间隔色
         cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
@@ -93,7 +93,6 @@
     });
 
     function responseHandler(result){
-        console.info(result);
         return {
             total : result.total, //总页数,前面的key必须为"total"
             rows : result.list //行数据，前面的key要与之前设置的dataField的值一致.

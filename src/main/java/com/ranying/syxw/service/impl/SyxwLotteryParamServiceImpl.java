@@ -98,17 +98,19 @@ public class SyxwLotteryParamServiceImpl implements SyxwLotteryParamService {
         syxwLotteryQuery.setTable(syxwSyncDataService.getTableName(syxwLotteryParam.getType()));
 
         Calendar calendar = Calendar.getInstance();
-        syxwLotteryQuery.setBegin(calendar.getTime());
-        calendar.add(Calendar.DATE, -30); // -30天
         syxwLotteryQuery.setEnd(calendar.getTime());
+        calendar.add(Calendar.DATE, -30); // -30天
+        syxwLotteryQuery.setBegin(calendar.getTime());
         List<SyxwLotteryBaseRecord> list30 = syxwLotteryRecordBaseDAO.list(syxwLotteryQuery);
 
-        calendar.add(Calendar.DATE, -30); // -60天
         syxwLotteryQuery.setEnd(calendar.getTime());
+        calendar.add(Calendar.DATE, -30); // -60天
+        syxwLotteryQuery.setBegin(calendar.getTime());
         List<SyxwLotteryBaseRecord> list60 = syxwLotteryRecordBaseDAO.list(syxwLotteryQuery);
 
-        calendar.add(Calendar.DATE, -30); // -90天
         syxwLotteryQuery.setEnd(calendar.getTime());
+        calendar.add(Calendar.DATE, -30); // -90天
+        syxwLotteryQuery.setBegin(calendar.getTime());
         List<SyxwLotteryBaseRecord> list90 = syxwLotteryRecordBaseDAO.list(syxwLotteryQuery);
 
         List<SyxwLotteryBaseRecord> list = new ArrayList<>();

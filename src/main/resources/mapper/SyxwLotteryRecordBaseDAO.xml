@@ -43,10 +43,10 @@
             </if>
 
             <if test="begin!=null">
-                and t.opentime &lt;= #{begin}
+                and t.opentime &gt;= #{begin}
             </if>
             <if test="end!=null">
-                and t.opentime &gt; #{end}
+                and t.opentime &lt;#{end}
             </if>
 
         </where>

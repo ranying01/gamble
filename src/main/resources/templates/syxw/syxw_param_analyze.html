@@ -40,6 +40,13 @@
         </table>
     </div>
 
+    <hr/>
+
+    <!-- echarts 图表 -->
+    <div id="resultChart" style="width: 600px;height:400px;"></div>
+
+    <div class="row" style="margin-top: 30px"></div>
+
     <div class="row">
         <div class="col-sm-2 col-sm-offset-5">
             <button type="button" class="btn btn-default" id="closeBtn">关闭</button>
@@ -58,12 +65,12 @@
 <script th:src="@{/static/bootstrap-validator/js/bootstrapValidator.js}"></script>
 <script th:src="@{/static/bootstrap-validator/js/language/zh_CN.js}"></script>
 <script th:src="@{/static/layer/layer.js}"></script>
+<script th:src="@{/static/echarts-4.2.1/echarts.js}"></script>
 
 <script th:inline="javascript">
     /*<![CDATA[*/
     var context = /*[[@{/}]]*/;
     /*]]>*/
-
 </script>
 
 <script type="text/javascript">
@@ -102,7 +109,92 @@
         });
 
         generate();
+
     });
+    
+    function chart(rang1,rang2,rang3) {
+
+        rang1.shift();
+        rang2.shift();
+        rang3.shift();
+        debugger;
+
+
+        var option = {
+            title : {
+                text: '参数分析',
+                subtext: '供分析参考'
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            tooltip : {
+                trigger: 'axis'
+            },
+            legend: {
+                data:['30天','60天','90天']
+            },
+            xAxis : [
+                {
+                    type : 'category',
+                    // data : ['小于10期','10到15期','15期以上']
+                    data : ['10到15期','15期以上']
+                }
+            ],
+            yAxis : {},
+            series : [
+                {
+                    name:'30天',
+                    type:'bar',
+                    data:rang1,
+                    markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name: '平均值'}
+                        ]
+                    }
+                },
+                {
+                    name:'60天',
+                    type:'bar',
+                    data:rang2,
+                    markLine : {
+                        data : [
+                            {type : 'average', name : '平均值'}
+                        ]
+                    }
+                },
+                {
+                    name:'90天',
+                    type:'bar',
+                    data:rang3,
+                    markLine : {
+                        data : [
+                            {type : 'average', name : '平均值'}
+                        ]
+                    }
+                }
+            ]
+        };
+
+        var myChart = echarts.init(document.getElementById('resultChart'));
+        myChart.setOption(option);
+        
+    }
+    
 
     function generate() {
         var id = $("#id").val();
@@ -113,13 +205,18 @@
             dataType: "json",
             data: $('#numberForm').serialize(),
             success: function (result) {
-                var list = result.generateRows;
+                debugger;
+                var list = [];
+                list.push(result.generateRow);
                 var entity = result.lotteryParam;
                 $("#name").val(entity.name);
                 $("#amount").val(entity.amount);
                 $("#numbers").val(entity.numbers);
                 $("#gambleTable").bootstrapTable('load', list);
                 $("#resultDiv").show();
+
+                chart(result.rang1,result.rang2,result.rang3);
+
             },
             fail: function (result) {
                 layer.alert('操作失败:' + result.message);

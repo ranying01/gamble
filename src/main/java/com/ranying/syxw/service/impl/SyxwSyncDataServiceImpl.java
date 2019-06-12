@@ -42,7 +42,8 @@ public class SyxwSyncDataServiceImpl implements SyxwSyncDataService {
     @Resource
     private SyxwLotteryRecordBaseDAO syxwLotteryRecordBaseDAO;
 
-    private SyxwLotteryRecordQuery getSyxwLotteryRecordQuery(SyxwLotteryParam lotteryParam) {
+    @Override
+    public SyxwLotteryRecordQuery getSyxwLotteryRecordQuery(SyxwLotteryParam lotteryParam) {
         SyxwLotteryRecordQuery syxwLotteryQuery = new SyxwLotteryRecordQuery();
         // List<String[]> queryList = lotteryParam.getNumberList();
         // syxwLotteryQuery.setLotteryNumbers(queryList);
@@ -53,7 +54,8 @@ public class SyxwSyncDataServiceImpl implements SyxwSyncDataService {
     }
 
 
-    private String getTableName(String type) {
+    @Override
+    public String getTableName(String type) {
 
         if (SyxwConstant.LotteryType.GD.getValue().equals(type)) {
             return "syxw_gd_lottery_record";

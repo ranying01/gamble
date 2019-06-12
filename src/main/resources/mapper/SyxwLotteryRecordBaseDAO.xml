@@ -41,6 +41,14 @@
                     </foreach>
                 )
             </if>
+
+            <if test="begin!=null">
+                and t.opentime &lt;= #{begin}
+            </if>
+            <if test="end!=null">
+                and t.opentime &gt; #{end}
+            </if>
+
         </where>
         order by expect desc
         <if test="limit!=null">

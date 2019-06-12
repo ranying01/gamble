@@ -1,8 +1,14 @@
 package com.ranying.syxw.query;
 
+import lombok.Data;
+import lombok.ToString;
+
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
+@Data
+@ToString
 public class SyxwLotteryRecordQuery implements Serializable {
 
     private String table;
@@ -17,43 +23,8 @@ public class SyxwLotteryRecordQuery implements Serializable {
 
     private Integer limit;
 
-    public Integer getLimit() {
-        return limit;
-    }
+    private Date begin;
 
-    public void setLimit(Integer limit) {
-        this.limit = limit;
-    }
+    private Date end;
 
-    public Integer getExpect() {
-        return expect;
-    }
-
-    public void setExpect(Integer expect) {
-        this.expect = expect;
-    }
-
-    public List<String[]> getLotteryNumbers() {
-        return lotteryNumbers;
-    }
-
-    public void setLotteryNumbers(List<String[]> lotteryNumbers) {
-        this.lotteryNumbers = lotteryNumbers;
-    }
-
-    public String getTable() {
-        return table;
-    }
-
-    public void setTable(String table) {
-        this.table = table;
-    }
-
-    public List<String> getCodesList() {
-        return codesList;
-    }
-
-    public void setCodesList(List<String> codesList) {
-        this.codesList = codesList;
-    }
 }

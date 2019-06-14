@@ -9,14 +9,17 @@ import com.ranying.cqssc.entity.LotteryRecord;
 import com.ranying.cqssc.query.LotteryParamQuery;
 import com.ranying.cqssc.service.SyncDataService;
 import com.ranying.util.DateFormat;
+import com.ranying.util.EmailTool;
 import com.ranying.util.HttpClientUtil;
 import com.ranying.cqssc.vo.GenerateResultVO;
 import com.ranying.cqssc.vo.GenerateRow;
 import com.ranying.cqssc.vo.GenerateVO;
+import com.ranying.util.SimpleMailParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +27,9 @@ import java.util.Set;
 
 @Service
 public class SyncDataServiceImpl implements SyncDataService {
+
+    @Resource
+    private EmailTool emailTool;
 
     @Resource
     private LotteryRecordDAO lotteryRecordDAO;
@@ -70,11 +76,16 @@ public class SyncDataServiceImpl implements SyncDataService {
         try {
             Thread.sleep(10000);
         } catch (Exception e) {
-            //do nothing
+            // do nothing
         }
-        String resultStr = HttpClientUtil.doGet(url);
-        List<LotteryRecord> records = getRecords(resultStr);
-        lotteryRecordDAO.batchInsert(records);
+        try {
+            String resultStr = HttpClientUtil.doGet(url);
+            List<LotteryRecord> records = getRecords(resultStr);
+            lotteryRecordDAO.batchInsert(records);
+        } catch (Exception e) {
+            SimpleMailParam simpleMail = new SimpleMailParam("彩票接口异常警告", "重庆时时彩 彩票结果同步异常，请知悉" + e.getMessage());
+            emailTool.sendSimpleMail(simpleMail);
+        }
     }
 
     /**

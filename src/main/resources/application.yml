@@ -17,13 +17,28 @@ spring:
   devtools:
     restart:
       enabled: true
-
   thymeleaf:
     cache: false
     prefix: classpath:/templates/
     suffix: .html
     encoding: UTF-8
     mode: HTML5
+
+  mail:
+    host: smtp.163.com
+    username: ranying2013@163.com
+    password: 5201314ying
+    protocol: smtp
+    properties:
+      mail.smtp:
+        auth: true
+        ssl.enable: true
+  #是否用启用加密传送的协议验证项
+  #注意：在spring.mail.password处的值是需要在邮箱设置里面生成的授权码，这个不是真实的密码
+
+email:
+  # api.warning.default.to: 1756251697@qq.com
+  api.warning.default.to: 598877265@qq.com
 
 # 重庆时时彩
 lottery:

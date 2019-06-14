@@ -10,7 +10,9 @@ import com.ranying.syxw.service.SyxwSyncDataService;
 import com.ranying.syxw.vo.SyxwGenerateRow;
 import com.ranying.syxw.vo.SyxwMaxNeglectResult;
 import com.ranying.util.DateFormat;
+import com.ranying.util.EmailTool;
 import com.ranying.util.HttpClientUtil;
+import com.ranying.util.SimpleMailParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +40,9 @@ public class SyxwSyncDataServiceImpl implements SyxwSyncDataService {
 
     @Value("${sdsyxw.api}")
     private String sdSyxwUrl;
+
+    @Resource
+    private EmailTool emailTool;
 
     @Resource
     private SyxwLotteryRecordBaseDAO syxwLotteryRecordBaseDAO;
@@ -125,9 +130,14 @@ public class SyxwSyncDataServiceImpl implements SyxwSyncDataService {
         logger.info("url" + url);
         String resultStr = HttpClientUtil.doGet(url);
         logger.info("resultStr:" + resultStr);
-        List<SyxwLotteryBaseRecord> records = this.getRecords(resultStr, type);
-        if (records != null) {
-            syxwLotteryRecordBaseDAO.batchInsert(this.getTableName(type.getValue()), records);
+        try {
+            List<SyxwLotteryBaseRecord> records = this.getRecords(resultStr, type);
+            if (records != null) {
+                syxwLotteryRecordBaseDAO.batchInsert(this.getTableName(type.getValue()), records);
+            }
+        } catch (Exception e) {
+            SimpleMailParam simpleMail = new SimpleMailParam("彩票接口异常警告", type.getName() + "彩票结果同步异常，" + resultStr + "请知悉 , 错误" + e.getMessage());
+            emailTool.sendSimpleMail(simpleMail);
         }
     }
 
@@ -186,7 +196,7 @@ public class SyxwSyncDataServiceImpl implements SyxwSyncDataService {
             lotteryRecord.setOpentimestamp(lotteryRecord.getOpentime().getTime());
             lotteryRecord.setWarningStatisticFlag(0);
             Arrays.sort(numbers);
-            lotteryRecord.setCodes(numbers[0]+","+numbers[1]+","+numbers[2]+","+numbers[3]+","+numbers[4]);
+            lotteryRecord.setCodes(numbers[0] + "," + numbers[1] + "," + numbers[2] + "," + numbers[3] + "," + numbers[4]);
             records.add(lotteryRecord);
         }
         return records;

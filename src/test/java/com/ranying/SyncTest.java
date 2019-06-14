@@ -13,8 +13,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Calendar;
 import java.util.Date;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+/*@RunWith(SpringRunner.class)
+@SpringBootTest*/
 public class SyncTest {
 
     @Autowired
@@ -44,7 +44,7 @@ public class SyncTest {
         //syncDataService.generate(generateParamVO);
     }
 
-    @Test
+    //@Test
     public void warningResults(){
         warningResultsService.statisticsWarning();
     }

@@ -4,9 +4,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/gamble?useUnicode=true&characterEncoding=utf8
-    username: root
-    password: 1234
+    url: 
+    username: 
+    password: 
     driverClassName: com.mysql.jdbc.Driver
     initialSize: 20
     minIdle: 20
@@ -24,54 +24,7 @@ spring:
     encoding: UTF-8
     mode: HTML5
 
-  mail:
-    host: smtp.163.com
-    username: ranying2013@163.com
-    password: 5201314ying
-    protocol: smtp
-    properties:
-      mail.smtp:
-        auth: true
-        ssl.enable: true
-  #是否用启用加密传送的协议验证项
-  #注意：在spring.mail.password处的值是需要在邮箱设置里面生成的授权码，这个不是真实的密码
 
-email:
-  # api.warning.default.to: 1756251697@qq.com
-  api.warning.default.to: 598877265@qq.com
-
-# 重庆时时彩
-lottery:
-  #api: http://b.apiplus.net/daily.do?token=tdede07ae0e0cc022k&code=cqssc&format=json
-  api: http://api.caipiaokong.cn/lottery/?name=cqssc&format=json&uid=1312037&token=22ff21ab80018e1185686eb9a1e6eb16888490ec
-
-#广东11选5  https://www.caipiaokong.com/
-gdsyxw:
-  api: http://api.caipiaokong.cn/lottery/?name=gdsyxw&format=json&uid=1309287&token=8029e724ac6951940b5a988e36c7276ceff98eef
-
-#上海11选5
-shsyxw:
-  api: http://api.caipiaokong.cn/lottery/?name=shsyxw&format=json&uid=1312037&token=22ff21ab80018e1185686eb9a1e6eb16888490ec
-
-#江苏11选5
-jssyxw:
-  api: http://api.caipiaokong.cn/lottery/?name=jssyxw&format=json&uid=1312037&token=22ff21ab80018e1185686eb9a1e6eb16888490ec
-
-#江西11选5
-jxsyxw:
-  api: http://api.caipiaokong.cn/lottery/?name=jxsyxw&format=json&uid=1312037&token=22ff21ab80018e1185686eb9a1e6eb16888490ec
-
-#山东11选5
-sdsyxw:
-  api: http://api.caipiaokong.cn/lottery/?name=sdsyydj&format=json&uid=1312037&token=22ff21ab80018e1185686eb9a1e6eb16888490ec
-
-#阿里云短信
-sms:
-  api:
-    url: http://yzxyzm.market.alicloudapi.com/yzx/verifySms
-    appKey: 24745121
-    appcode: 2a531df4a4184dba93f7038491b47e26
-    appSecret: 430c9658bcf9c56fc044d647c98a7dd2
 
 task:
   flag: false

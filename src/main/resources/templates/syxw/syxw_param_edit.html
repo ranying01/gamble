@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>十一选五</title>
+    <link rel="stylesheet" th:href="@{/static/bootstrap/css/bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{/static/bootstrap-table/bootstrap-table.css}"/>
+    <link rel="stylesheet" th:href="@{/static/bootstrap-validator/css/bootstrapValidator.css}"/>
+</head>
+<body>
+
+<div class="container">
+
+    <form id="numberForm" class="form-horizontal" role="form" style="margin-top: 20px;">
+        <input type="hidden" id="id" name="id" th:value="${entity.id}"/>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">彩票类型</label>
+            <div class="col-sm-3">
+                <p class="form-control-static" th:text="${entity.typeName}"></p>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">名称</label>
+            <div class="col-sm-3">
+                <input class="form-control" id="name" readonly th:value="${entity.name}"/>
+            </div>
+
+            <label for="amount" class="col-sm-2 control-label">注数</label>
+            <div class="col-sm-3">
+                <input class="form-control" id="amount" readonly th:value="${entity.amount}"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="maxNeglect" class="col-sm-2 control-label">历史最大遗漏</label>
+            <div class="col-sm-3">
+                <input class="form-control" id="maxNeglect" name="maxNeglect" th:value="${entity.maxNeglect}"/>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="numbers" class="col-sm-2 control-label">参数详情</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="numbers" placeholder="请从APP上复制粘贴过来" readonly
+                                  th:text="${entity.numbers}"
+                                  rows="10"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-5 pull-right">
+                <button type="button" class="btn btn-sm btn-success " id="updateBtn">更新</button>
+            </div>
+        </div>
+        <hr/>
+    </form>
+
+    <div class="row">
+        <div class="col-sm-2 col-sm-offset-5">
+            <button type="button" class="btn btn-default" id="closeBtn">关闭</button>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 30px"></div>
+
+</div>
+
+</body>
+
+<script th:src="@{/static/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/static/bootstrap/js/bootstrap.js}"></script>
+<script th:src="@{/static/bootstrap-table/bootstrap-table.js}"></script>
+<script th:src="@{/static/bootstrap-validator/js/bootstrapValidator.js}"></script>
+<script th:src="@{/static/bootstrap-validator/js/language/zh_CN.js}"></script>
+<script th:src="@{/static/layer/layer.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var context = /*[[@{/}]]*/;
+    /*]]>*/
+
+</script>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $("#numberForm").bootstrapValidator({
+            fields: {
+                maxNeglect: {
+                    validators: {
+                        notEmpty: {
+                            message: '历史最大遗漏不能为空'
+                        }
+                    }
+                },
+            }
+        });
+
+        $("#closeBtn").click(function () {
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+
+        $("#updateBtn").click(function () {
+            var bootstrapValidator = $("#numberForm").data('bootstrapValidator');
+            bootstrapValidator.validate();
+            if (!bootstrapValidator.isValid()) {
+                return;
+            }
+            var id = $("#id").val();
+            var syxw_index = layer.load(1);
+            $.ajax({
+                url: context + 'syxw/param/' + id + '/edit',
+                type: 'post',
+                dataType: "json",
+                data: $('#numberForm').serialize(),
+                success: function (result) {
+                    if (result.code === 200) {
+                        parent.layer.msg('保存成功');
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        layer.alert('保存失败:' + result.message);
+                    }
+                },
+                fail: function () {
+                    layer.alert('保存失败');
+                },
+                complete: function () {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                    setTimeout(function () {
+                        parent.listData();
+                    })
+                }
+            })
+        });
+
+
+    });
+
+</script>
+
+</html>

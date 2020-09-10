@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ranying.syxw.dao.SyxwLotteryRecordBaseDAO">
+
+    <resultMap id="BaseResultMap" type="com.ranying.syxw.entity.SyxwLotteryBaseRecord">
+        <id column="expect" jdbcType="VARCHAR" property="expect" />
+        <result column="opencode1" jdbcType="CHAR" property="opencode1" />
+        <result column="opencode2" jdbcType="CHAR" property="opencode2" />
+        <result column="opencode3" jdbcType="CHAR" property="opencode3" />
+        <result column="opencode4" jdbcType="CHAR" property="opencode4" />
+        <result column="opencode5" jdbcType="CHAR" property="opencode5" />
+        <result column="opentime" jdbcType="TIMESTAMP" property="opentime" />
+        <result column="opentimestamp" jdbcType="BIGINT" property="opentimestamp" />
+        <result column="warning_statistic_flag" jdbcType="INTEGER" property="warningStatisticFlag" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        expect, opencode1, opencode2, opencode3, opencode4, opencode5, opentime, opentimestamp,
+        warning_statistic_flag
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from ${table}
+        where expect = #{expect,jdbcType=VARCHAR}
+    </select>
+
+    <select id="list" resultMap="BaseResultMap">
+        select
+          t.*
+        from  ${table} t
+        <where>
+            <if test="expect!=null">
+                and expect = #{expect}
+            </if>
+            <if test="codesList!=null and codesList.size()>0">
+                and codes in (
+                    <foreach collection="codesList" item="codes" separator=",">
+                        #{codes}
+                    </foreach>
+                )
+            </if>
+
+            <if test="begin!=null">
+                and t.opentime &gt;= #{begin}
+            </if>
+            <if test="end!=null">
+                and t.opentime &lt;#{end}
+            </if>
+
+        </where>
+        order by expect desc
+        <if test="limit!=null">
+            limit #{limit}
+        </if>
+    </select>
+
+    <select id="countPeriod" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM  ${table}
+        WHERE expect> #{expect}
+        AND expect &lt;= (SELECT max(expect) FROM ${table})
+    </select>
+
+    <select id="searchPeriod" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM  ${table}
+        WHERE expect> #{preExpect}
+        AND expect &lt;= #{expect}
+    </select>
+
+    <select id="searchMaxExpect" resultType="java.lang.String">
+        SELECT max(expect) FROM  ${table}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from  ${table}
+        where expect = #{expect,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.ranying.syxw.entity.SyxwLotteryBaseRecord">
+        insert into  ${table} (expect, opencode1, opencode2,
+        opencode3, opencode4, opencode5,codes,
+        opentime, opentimestamp, warning_statistic_flag
+        )
+        values (#{expect,jdbcType=VARCHAR}, #{opencode1,jdbcType=CHAR}, #{opencode2,jdbcType=CHAR},
+        #{opencode3,jdbcType=CHAR}, #{opencode4,jdbcType=CHAR}, #{opencode5,jdbcType=CHAR}, #{record.codes,jdbcType=CHAR},
+        #{opentime,jdbcType=TIMESTAMP}, #{opentimestamp,jdbcType=BIGINT}, #{warningStatisticFlag,jdbcType=INTEGER}
+        )
+    </insert>
+
+    <insert id="batchInsert">
+        insert into ${table}
+        (expect, opencode1, opencode2,
+        opencode3, opencode4, opencode5,codes,
+        opentime, opentimestamp
+        )
+        values
+        <foreach collection="records" item="record" separator=",">
+            (
+            #{record.expect,jdbcType=VARCHAR}, #{record.opencode1,jdbcType=CHAR}, #{record.opencode2,jdbcType=CHAR},
+            #{record.opencode3,jdbcType=CHAR}, #{record.opencode4,jdbcType=CHAR}, #{record.opencode5,jdbcType=CHAR},
+            #{record.codes,jdbcType=CHAR},
+            #{record.opentime,jdbcType=TIMESTAMP}, #{record.opentimestamp,jdbcType=BIGINT}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        expect = VALUES(expect),
+        opencode1 = VALUES(opencode1),
+        opencode2 = VALUES(opencode2),
+        opencode3 = VALUES(opencode3),
+        opencode4 = VALUES(opencode4),
+        opencode5 = VALUES(opencode5),
+        codes = VALUES(codes),
+        opentime = VALUES(opentime),
+        opentimestamp = VALUES(opentimestamp)
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.ranying.syxw.entity.SyxwLotteryBaseRecord">
+        insert into ${table}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="expect != null">
+                expect,
+            </if>
+            <if test="opencode1 != null">
+                opencode1,
+            </if>
+            <if test="opencode2 != null">
+                opencode2,
+            </if>
+            <if test="opencode3 != null">
+                opencode3,
+            </if>
+            <if test="opencode4 != null">
+                opencode4,
+            </if>
+            <if test="opencode5 != null">
+                opencode5,
+            </if>
+            <if test="opentime != null">
+                opentime,
+            </if>
+            <if test="opentimestamp != null">
+                opentimestamp,
+            </if>
+            <if test="warningStatisticFlag != null">
+                warning_statistic_flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="expect != null">
+                #{expect,jdbcType=VARCHAR},
+            </if>
+            <if test="opencode1 != null">
+                #{opencode1,jdbcType=CHAR},
+            </if>
+            <if test="opencode2 != null">
+                #{opencode2,jdbcType=CHAR},
+            </if>
+            <if test="opencode3 != null">
+                #{opencode3,jdbcType=CHAR},
+            </if>
+            <if test="opencode4 != null">
+                #{opencode4,jdbcType=CHAR},
+            </if>
+            <if test="opencode5 != null">
+                #{opencode5,jdbcType=CHAR},
+            </if>
+            <if test="opentime != null">
+                #{opentime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="opentimestamp != null">
+                #{opentimestamp,jdbcType=BIGINT},
+            </if>
+            <if test="warningStatisticFlag != null">
+                #{warningStatisticFlag,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.ranying.syxw.entity.SyxwLotteryBaseRecord">
+        update ${table}
+        <set>
+            <if test="opencode1 != null">
+                opencode1 = #{opencode1,jdbcType=CHAR},
+            </if>
+            <if test="opencode2 != null">
+                opencode2 = #{opencode2,jdbcType=CHAR},
+            </if>
+            <if test="opencode3 != null">
+                opencode3 = #{opencode3,jdbcType=CHAR},
+            </if>
+            <if test="opencode4 != null">
+                opencode4 = #{opencode4,jdbcType=CHAR},
+            </if>
+            <if test="opencode5 != null">
+                opencode5 = #{opencode5,jdbcType=CHAR},
+            </if>
+            <if test="opentime != null">
+                opentime = #{opentime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="opentimestamp != null">
+                opentimestamp = #{opentimestamp,jdbcType=BIGINT},
+            </if>
+            <if test="warningStatisticFlag != null">
+                warning_statistic_flag = #{warningStatisticFlag,jdbcType=INTEGER},
+            </if>
+        </set>
+        where expect = #{expect,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.ranying.syxw.entity.SyxwLotteryBaseRecord">
+        update  ${table}
+        set opencode1 = #{opencode1,jdbcType=CHAR},
+        opencode2 = #{opencode2,jdbcType=CHAR},
+        opencode3 = #{opencode3,jdbcType=CHAR},
+        opencode4 = #{opencode4,jdbcType=CHAR},
+        opencode5 = #{opencode5,jdbcType=CHAR},
+        opentime = #{opentime,jdbcType=TIMESTAMP},
+        opentimestamp = #{opentimestamp,jdbcType=BIGINT},
+        warning_statistic_flag = #{warningStatisticFlag,jdbcType=INTEGER}
+        where expect = #{expect,jdbcType=VARCHAR}
+    </update>
+</mapper>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>重庆时时彩辅助工具</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/static/bootstrap/css/bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{/static/bootstrap-table/bootstrap-table.css}"/>
+    <link rel="stylesheet" th:href="@{/static/bootstrap-validator/css/bootstrapValidator.css}"/>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="text-center">
+            <h2>重庆时时彩辅助工具</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-5 pull-right">
+            <a th:href="@{/cqssc/param/index}" class="btn btn-sm btn-info">参数列表</a>
+            <a th:href="@{/cqssc/warning/index}" class="btn btn-sm btn-warning col-sm-offset-1">预警列表</a>
+            <a th:href="@{/cqssc/warning/result/index}" class="btn btn-sm btn-success col-sm-offset-1">预警结果</a>
+        </div>
+    </div>
+
+    <hr/>
+
+    <form id="numberForm" class="form-horizontal" role="form">
+
+        <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">名称</label>
+            <div class="col-sm-3">
+                <input class="form-control" id="name" name="name"/>
+            </div>
+
+            <label for="amount" class="col-sm-2 control-label">注数</label>
+            <div class="col-sm-3">
+                <input class="form-control" id="amount" name="amount" readonly/>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="row">
+
+            <div class="col-sm-6">
+
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" for="wqb">万千百</label>
+                    <div class="col-sm-5">
+                        <input type="number" class="form-control" id="wqb" name="wqb" placeholder="位置一"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="wqs" class="col-sm-4 control-label">万千十</label>
+                    <div class="col-sm-5">
+                        <input type="number" class="form-control" id="wqs" name="wqs" placeholder="位置二"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="wqg" class="col-sm-4 control-label">万千个</label>
+                    <div class="col-sm-5">
+                        <input type="number" class="form-control" id="wqg" name="wqg" placeholder="位置三"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="wbs" class="col-sm-4 control-label">万百十</label>
+                    <div class="col-sm-5">
+                        <input type="number" class="form-control" id="wbs" name="wbs" placeholder="位置四"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="wbg" class="col-sm-4 control-label">万百个</label>
+                    <div class="col-sm-5">
+                        <input type="number" class="form-control" id="wbg" name="wbg" placeholder="位置五"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="wsg" class="col-sm-4 control-label">万十个</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="wsg" name="wsg" placeholder="位置六"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="qbs" class="col-sm-4 control-label">千百十</label>
+                    <div class="col-sm-5">
+                        <input type="number" class="form-control" id="qbs" name="qbs" placeholder="位置七"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="qbg" class="col-sm-4 control-label">千百个</label>
+                    <div class="col-sm-5">
+                        <input type="number" class="form-control" id="qbg" name="qbg" placeholder="位置八"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="qsg" class="col-sm-4 control-label">千十个</label>
+                    <div class="col-sm-5">
+                        <input type="number" class="form-control" id="qsg" name="qsg" placeholder="位置九"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="bsg" class="col-sm-4 control-label">百十个</label>
+                    <div class="col-sm-5">
+                        <input type="number" class="form-control" id="bsg" name="bsg" placeholder="位置十"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="numbers" class="col-sm-2 control-label">参数详情</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="numbers" name="numbers" placeholder="请从APP上复制粘贴过来"
+                                  rows="10"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="form-group">
+            <div class="text-center">
+                <div class="col-xs-2 col-sm-2 col-xs-offset-3 col-md-offset-3">
+                    <button type="button" class="btn btn-success" id="saveBtn">保存</button>
+                </div>
+
+                <div class="col-xs-2 col-sm-2">
+                    <button type="button" class="btn btn-info" id="generateBtn">生成</button>
+                </div>
+
+                <div class="col-xs-2 col-sm-2">
+                    <button type="button" class="btn btn-danger" id="resetBtn">清空</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <hr/>
+
+    <div id="resultDiv" class="col-xs-12 col-sm-12" style="display: none">
+        <h3>以下为结果数据</h3>
+        <table id="gambleTable" class="table">
+        </table>
+    </div>
+
+</div>
+
+</body>
+
+<script th:src="@{/static/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/static/bootstrap/js/bootstrap.js}"></script>
+<script th:src="@{/static/bootstrap-table/bootstrap-table.js}"></script>
+<script th:src="@{/static/bootstrap-validator/js/bootstrapValidator.js}"></script>
+<script th:src="@{/static/bootstrap-validator/js/language/zh_CN.js}"></script>
+<script th:src="@{/static/layer/layer.js}"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var context = /*[[@{/}]]*/;
+    /*]]>*/
+</script>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $("#numberForm").bootstrapValidator({
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: '名称不能为空'
+                        }
+                    }
+                },
+                numbers: {
+                    validators: {
+                        notEmpty: {
+                            message: '参数详情不能为空'
+                        }
+                    }
+                },
+                wqb: {
+                    validators: {
+                        notEmpty: {
+                            message: '（万千百）历史最大遗漏不能为空'
+                        }
+                    }
+                },
+                wqs: {
+                    validators: {
+                        notEmpty: {
+                            message: '（万千十）历史最大遗漏不能为空'
+                        }
+                    }
+                },
+                wqg: {
+                    validators: {
+                        notEmpty: {
+                            message: '（万千个）历史最大遗漏不能为空'
+                        }
+                    }
+                },
+                wbs: {
+                    validators: {
+                        notEmpty: {
+                            message: '（万百十）历史最大遗漏不能为空'
+                        }
+                    }
+                },
+                wbg: {
+                    validators: {
+                        notEmpty: {
+                            message: '（万百个）历史最大遗漏不能为空'
+                        }
+                    }
+                },
+                wsg: {
+                    validators: {
+                        notEmpty: {
+                            message: '（万十个）历史最大遗漏不能为空'
+                        }
+                    }
+                },
+                qbs: {
+                    validators: {
+                        notEmpty: {
+                            message: '（千百十）历史最大遗漏不能为空'
+                        }
+                    }
+                },
+                qbg: {
+                    validators: {
+                        notEmpty: {
+                            message: '（千百个）历史最大遗漏不能为空'
+                        }
+                    }
+                },
+                qsg: {
+                    validators: {
+                        notEmpty: {
+                            message: '（千十个）历史最大遗漏不能为空'
+                        }
+                    }
+                },
+                bsg: {
+                    validators: {
+                        notEmpty: {
+                            message: '（百十个）历史最大遗漏不能为空'
+                        }
+                    }
+                },
+            }
+        });
+
+        $('#gambleTable').bootstrapTable({
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: false,                     //是否启用排序
+            pageSize: 10,                       //每页的记录行数（*）
+            search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+            showColumns: true,                  //是否显示所有的列
+            showToggle: true,                    //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                   //是否显示父子表
+            columns: [{
+                field: 'latestExpect',
+                title: '最近开奖期数'
+            }, {
+                field: 'location',
+                title: '位置'
+            }, {
+                field: 'maxNeglect',
+                title: '历史最大遗漏'
+            }, {
+                field: 'period',
+                title: '当前遗漏',
+                formatter: function (period, row) {
+                    if (row.waringFlag === 1) {
+                        return '<p style="color: red">' + period + '</p>';
+                    }
+                    return period;
+                }
+            }, {
+                field: 'times',
+                title: '最近开出次数'
+            }]
+        });
+
+        $("#generateBtn").click(function () {
+            generate();
+        });
+
+        $("#resetBtn").click(function () {
+            $('#numberForm')[0].reset()
+            $("#resultDiv").hide();
+            $("#numbers").text('');
+        });
+
+        $("#saveBtn").click(function () {
+            var bootstrapValidator = $("#numberForm").data('bootstrapValidator');
+            //$('#numberForm').bootstrapValidator('validate');
+            bootstrapValidator.validate();
+            if (!bootstrapValidator.isValid()) {
+                return;
+            }
+            var index = layer.load(1);
+            $.ajax({
+                url: context + '/cqssc/save',
+                type: 'post',
+                dataType: "json",
+                data: $('#numberForm').serialize(),
+                success: function (result) {
+                    if (result.code === 200) {
+                        layer.msg('保存成功');
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        layer.alert('保存失败:' + result.message);
+                    }
+                },
+                fail: function () {
+                    layer.alert('保存失败');
+                },
+                complete: function () {
+                    layer.close(index);
+                }
+            })
+        });
+
+        $("#numbers").blur(function () {
+            var numbers = $("#numbers").val();
+            if (numbers === '') {
+                $("#amount").val(0);
+                return;
+            }
+            var words = numbers.split(' ');
+            $("#amount").val(words.length);
+        });
+    });
+
+    function generate() {
+        var bootstrapValidator = $("#numberForm").data('bootstrapValidator');
+        //$('#numberForm').bootstrapValidator('validate');
+        bootstrapValidator.validate();
+        if (!bootstrapValidator.isValid()) {
+            return;
+        }
+        var index = layer.load(1);
+        $.ajax({
+            url: context + '/cqssc/generate',
+            type: 'post',
+            dataType: "json",
+            data: $('#numberForm').serialize(),
+            success: function (result) {
+                var list = result.generateRows;
+                $("#gambleTable").bootstrapTable('load', list);
+                $("#resultDiv").show();
+            },
+            fail: function (result) {
+                layer.alert('操作失败:' + result.message);
+            },
+            complete: function () {
+                layer.close(index);
+            }
+        })
+    }
+
+</script>
+
+</html>

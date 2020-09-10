@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ranying.cqssc.dao.LotteryRecordDAO">
+  <resultMap id="BaseResultMap" type="com.ranying.cqssc.entity.LotteryRecord">
+    <id column="expect" jdbcType="VARCHAR" property="expect" />
+    <result column="opencode1" jdbcType="INTEGER" property="opencode1" />
+    <result column="opencode2" jdbcType="INTEGER" property="opencode2" />
+    <result column="opencode3" jdbcType="INTEGER" property="opencode3" />
+    <result column="opencode4" jdbcType="INTEGER" property="opencode4" />
+    <result column="opencode5" jdbcType="INTEGER" property="opencode5" />
+    <result column="opentime" jdbcType="TIMESTAMP" property="opentime" />
+    <result column="opentimestamp" jdbcType="BIGINT" property="opentimestamp" />
+    <result column="warning_statistic_flag" javaType="INTEGER" property="warningStatisticFlag"/>
+  </resultMap>
+  
+  <resultMap id="GenerateMap" type="com.ranying.cqssc.vo.GenerateVO">
+    <id column="expect" property="latestExpect"/>
+    <result column="n1" property="number1"/>
+    <result column="n2" property="number2"/>
+    <result column="n3" property="number3"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    expect, opencode1, opencode2, opencode3, opencode4, opencode5, opentime, opentimestamp
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lottery_record
+    where expect = #{expect,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectLatestPeriod" resultMap="BaseResultMap">
+    SELECT
+      t.*
+    FROM
+      lottery_record t
+    ORDER BY expect DESC
+    LIMIT 1
+  </select>
+
+  <select id="queryGenerate" resultMap="GenerateMap">
+   SELECT
+      concat(n1, n2, n3) s,
+      t.*
+    FROM
+        (
+            SELECT
+               expect,
+               <if test="location=='wqb'">
+                 opencode1 AS n1,
+                 opencode2 AS n2,
+                 opencode3 AS n3
+               </if>
+
+              <if test="location=='wqs'">
+                opencode1 AS n1,
+                opencode2 AS n2,
+                opencode4 AS n3
+              </if>
+
+              <if test="location=='wqg'">
+                opencode1 AS n1,
+                opencode2 AS n2,
+                opencode5 AS n3
+              </if>
+
+              <if test="location=='wbs'">
+                opencode1 AS n1,
+                opencode3 AS n2,
+                opencode4 AS n3
+              </if>
+
+              <if test="location=='wbg'">
+                opencode1 AS n1,
+                opencode3 AS n2,
+                opencode5 AS n3
+              </if>
+
+              <if test="location=='wsg'">
+                opencode1 AS n1,
+                opencode4 AS n2,
+                opencode5 AS n3
+              </if>
+
+              <if test="location=='qbs'">
+                opencode2 AS n1,
+                opencode3 AS n2,
+                opencode4 AS n3
+              </if>
+
+              <if test="location=='qbg'">
+                opencode2 AS n1,
+                opencode3 AS n2,
+                opencode5 AS n3
+              </if>
+
+              <if test="location=='qsg'">
+                opencode2 AS n1,
+                opencode4 AS n2,
+                opencode5 AS n3
+              </if>
+
+              <if test="location=='bsg'">
+                opencode3 AS n1,
+                opencode4 AS n2,
+                opencode5 AS n3
+              </if>
+            FROM
+                lottery_record
+        ) t
+    WHERE
+        concat(n1, n2, n3) IN
+        (
+          <foreach collection="queryList" item="numbers" separator=",">
+            #{numbers}
+          </foreach>
+        )
+    ORDER BY t.expect DESC
+  </select>
+
+  <select id="queryWaringResult" resultMap="GenerateMap">
+    SELECT
+      concat(n1, n2, n3) s,
+      t.*
+    FROM
+    (
+      SELECT
+      expect,
+      <if test="location=='wqb'">
+        opencode1 AS n1,
+        opencode2 AS n2,
+        opencode3 AS n3
+      </if>
+
+      <if test="location=='wqs'">
+        opencode1 AS n1,
+        opencode2 AS n2,
+        opencode4 AS n3
+      </if>
+
+      <if test="location=='wqg'">
+        opencode1 AS n1,
+        opencode2 AS n2,
+        opencode5 AS n3
+      </if>
+
+      <if test="location=='wbs'">
+        opencode1 AS n1,
+        opencode3 AS n2,
+        opencode4 AS n3
+      </if>
+
+      <if test="location=='wbg'">
+        opencode1 AS n1,
+        opencode3 AS n2,
+        opencode5 AS n3
+      </if>
+
+      <if test="location=='wsg'">
+        opencode1 AS n1,
+        opencode4 AS n2,
+        opencode5 AS n3
+      </if>
+
+      <if test="location=='qbs'">
+        opencode2 AS n1,
+        opencode3 AS n2,
+        opencode4 AS n3
+      </if>
+
+      <if test="location=='qbg'">
+        opencode2 AS n1,
+        opencode3 AS n2,
+        opencode5 AS n3
+      </if>
+
+      <if test="location=='qsg'">
+        opencode2 AS n1,
+        opencode4 AS n2,
+        opencode5 AS n3
+      </if>
+
+      <if test="location=='bsg'">
+        opencode3 AS n1,
+        opencode4 AS n2,
+        opencode5 AS n3
+      </if>
+    FROM
+      lottery_record
+    ) t
+    WHERE
+      expect &lt;= #{currentExpect}
+      AND concat(n1, n2, n3) IN
+      (
+      <foreach collection="queryList" item="numbers" separator=",">
+        #{numbers}
+      </foreach>
+      )
+    ORDER BY t.expect DESC
+    LIMIT 2
+  </select>
+
+  <select id="countPeriod" resultType="java.lang.Integer">
+      SELECT count(1) FROM lottery_record
+      <where>
+        <if test="latestExpect!=null">
+          expect &gt; #{latestExpect}
+        </if>
+      </where>
+  </select>
+
+  <select id="list" resultType="com.ranying.cqssc.entity.LotteryRecord">
+    select t.* from lottery_record t
+    <where>
+      <if test="warningStatisticFlag!=null">
+        and  t.warning_statistic_flag = #{warningStatisticFlag}
+      </if>
+    </where>
+    order by expect asc
+  </select>
+
+  <select id="countBetweenPeriod" resultType="java.lang.Integer">
+    SELECT count(1) FROM lottery_record WHERE expect BETWEEN #{beginExpect} AND #{endExpect}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from lottery_record
+    where expect = #{expect,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.ranying.cqssc.entity.LotteryRecord">
+    insert into lottery_record (expect, opencode1, opencode2, 
+      opencode3, opencode4, opencode5, 
+      opentime, opentimestamp)
+    values (#{expect,jdbcType=VARCHAR}, #{opencode1,jdbcType=INTEGER}, #{opencode2,jdbcType=INTEGER}, 
+      #{opencode3,jdbcType=INTEGER}, #{opencode4,jdbcType=INTEGER}, #{opencode5,jdbcType=INTEGER}, 
+      #{opentime,jdbcType=DATE}, #{opentimestamp,jdbcType=BIGINT})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.ranying.cqssc.entity.LotteryRecord">
+    insert into lottery_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="expect != null">
+        expect,
+      </if>
+      <if test="opencode1 != null">
+        opencode1,
+      </if>
+      <if test="opencode2 != null">
+        opencode2,
+      </if>
+      <if test="opencode3 != null">
+        opencode3,
+      </if>
+      <if test="opencode4 != null">
+        opencode4,
+      </if>
+      <if test="opencode5 != null">
+        opencode5,
+      </if>
+      <if test="opentime != null">
+        opentime,
+      </if>
+      <if test="opentimestamp != null">
+        opentimestamp,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="expect != null">
+        #{expect,jdbcType=VARCHAR},
+      </if>
+      <if test="opencode1 != null">
+        #{opencode1,jdbcType=INTEGER},
+      </if>
+      <if test="opencode2 != null">
+        #{opencode2,jdbcType=INTEGER},
+      </if>
+      <if test="opencode3 != null">
+        #{opencode3,jdbcType=INTEGER},
+      </if>
+      <if test="opencode4 != null">
+        #{opencode4,jdbcType=INTEGER},
+      </if>
+      <if test="opencode5 != null">
+        #{opencode5,jdbcType=INTEGER},
+      </if>
+      <if test="opentime != null">
+        #{opentime,jdbcType=DATE},
+      </if>
+      <if test="opentimestamp != null">
+        #{opentimestamp,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+
+  <insert id="batchInsert">
+     insert into
+      lottery_record
+      (expect, opencode1, opencode2,
+        opencode3, opencode4, opencode5,
+        opentime, opentimestamp
+      )
+    values
+      <foreach collection="records" item="record" separator=",">
+        (
+          #{record.expect,jdbcType=VARCHAR}, #{record.opencode1,jdbcType=INTEGER}, #{record.opencode2,jdbcType=INTEGER},
+          #{record.opencode3,jdbcType=INTEGER}, #{record.opencode4,jdbcType=INTEGER}, #{record.opencode5,jdbcType=INTEGER},
+          #{record.opentime,jdbcType=TIMESTAMP}, #{record.opentimestamp,jdbcType=BIGINT}
+        )
+      </foreach>
+      ON DUPLICATE KEY UPDATE
+      expect = VALUES(expect),
+      opencode1 = VALUES(opencode1),
+      opencode2 = VALUES(opencode2),
+      opencode3 = VALUES(opencode3),
+      opencode4 = VALUES(opencode4),
+      opencode5 = VALUES(opencode5),
+      opentime = VALUES(opentime),
+      opentimestamp = VALUES(opentimestamp)
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.ranying.cqssc.entity.LotteryRecord">
+    update lottery_record
+    <set>
+      <if test="opencode1 != null">
+        opencode1 = #{opencode1,jdbcType=INTEGER},
+      </if>
+      <if test="opencode2 != null">
+        opencode2 = #{opencode2,jdbcType=INTEGER},
+      </if>
+      <if test="opencode3 != null">
+        opencode3 = #{opencode3,jdbcType=INTEGER},
+      </if>
+      <if test="opencode4 != null">
+        opencode4 = #{opencode4,jdbcType=INTEGER},
+      </if>
+      <if test="opencode5 != null">
+        opencode5 = #{opencode5,jdbcType=INTEGER},
+      </if>
+      <if test="opentime != null">
+        opentime = #{opentime,jdbcType=DATE},
+      </if>
+      <if test="opentimestamp != null">
+        opentimestamp = #{opentimestamp,jdbcType=BIGINT},
+      </if>
+      <if test="opentimestamp != null">
+        opentimestamp = #{opentimestamp,jdbcType=BIGINT},
+      </if>
+      <if test="warningStatisticFlag != null">
+        warning_statistic_flag = #{warningStatisticFlag,jdbcType=INTEGER},
+      </if>
+    </set>
+    where expect = #{expect,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.ranying.cqssc.entity.LotteryRecord">
+    update
+      lottery_record
+    set
+      opencode1 = #{opencode1,jdbcType=INTEGER},
+      opencode2 = #{opencode2,jdbcType=INTEGER},
+      opencode3 = #{opencode3,jdbcType=INTEGER},
+      opencode4 = #{opencode4,jdbcType=INTEGER},
+      opencode5 = #{opencode5,jdbcType=INTEGER},
+      opentime = #{opentime,jdbcType=DATE},
+      opentimestamp = #{opentimestamp,jdbcType=BIGINT}
+    where expect = #{expect,jdbcType=VARCHAR}
+  </update>
+
+</mapper>
